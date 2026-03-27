@@ -1,24 +1,63 @@
 const Event = require("./events-model");
 
-const getAllEvents = async () => {
+// queryData = req.query
+// in router we will call getAllEvents with the query data like so:
+// getAllEvents(req.query)
+const getAllEvents = async (queryData) => {
   try {
-    const events = await Event.find();
+    /*
+        queryData example: 
+        {
+            category: "concert"    
+            date: "05-10-26",
+        }
+     
+
+    */
+    // Object that will keep track of our filter queries
+    const filterObject = {};
+
+    // add the property to our filterObject
+    if (queryData.category) {
+      filterObject.category = queryData.category;
+    }
+
+    if (queryData.date) {
+      filterObject.date = queryData.date;
+    }
+
+    // example: ?date=07-10-26&category=conference - only conferences on July 10, 2026
+
+    filterObject.price = {
+      //to get a range
+      // $gte - greater than or equal to
+      // $lte - less than or equal to
+      $gte: queryData.minPrice || 0, //if no min default to 0
+      $lte: queryData.maxPrice || Infinity, //if no max default to infinity
+    };
+
+    const events = await Event.find(filterObject);
+
     return events;
   } catch (error) {
     throw error;
   }
 };
+
 const getEventById = async (eventId) => {
   try {
     const event = await Event.findById(eventId);
+
     if (!event) {
-      throw "Event not found";
+      throw Error("Event not found");
     }
+
     return event;
   } catch (error) {
     throw error;
   }
 };
+
 const createEvent = async (eventData) => {
   try {
     const newEvent = await Event.create(eventData);
@@ -27,7 +66,7 @@ const createEvent = async (eventData) => {
     throw error;
   }
 };
-//put
+
 const updateEvent = async (eventId, eventData) => {
   try {
     const updatedEvent = await Event.findByIdAndUpdate(eventId, eventData, {
@@ -43,17 +82,21 @@ const updateEvent = async (eventId, eventData) => {
     throw error;
   }
 };
+
 const deleteEvent = async (eventId) => {
   try {
     const eventToDelete = await Event.findByIdAndDelete(eventId);
+
     if (!eventToDelete) {
-      throw Error("Event to delete not found!");
+      throw Error("Event not found");
     }
+
     return eventToDelete;
   } catch (error) {
     throw error;
   }
 };
+
 module.exports = {
   createEvent,
   getAllEvents,

@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const events = await getAllEvents();
+    const events = await getAllEvents(req.query);
     res.json({
       message: "success",
       payload: events,
@@ -22,6 +22,7 @@ router.get("/", async (req, res) => {
     });
   }
 });
+
 router.get("/:id", async (req, res) => {
   try {
     const event = await getEventById(req.params.id);
@@ -36,6 +37,7 @@ router.get("/:id", async (req, res) => {
     });
   }
 });
+
 router.post("/", async (req, res) => {
   try {
     const newEvent = await createEvent(req.body);
@@ -50,6 +52,7 @@ router.post("/", async (req, res) => {
     });
   }
 });
+
 router.put("/:id", async (req, res) => {
   try {
     const updatedEvent = await updateEvent(req.params.id, req.body);
@@ -64,12 +67,13 @@ router.put("/:id", async (req, res) => {
     });
   }
 });
+
 router.delete("/:id", async (req, res) => {
   try {
     const eventToDelete = await deleteEvent(req.params.id);
     res.json({
       message: "success",
-      payload: `${eventToDelete.eventname} has been removed from database!`,
+      payload: `${eventToDelete.eventname} has been removed from the database.`,
     });
   } catch (error) {
     res.status(404).json({
