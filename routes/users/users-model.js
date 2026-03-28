@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-
+const Booking = require("../bookings/bookings-model");
+const ObjectId = mongoose.Schema.Types.ObjectId;
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -15,6 +16,10 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       unique: true,
+    },
+    bookedEvents: {
+      type: ObjectId,
+      ref: Booking,
     },
   },
   {

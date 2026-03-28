@@ -1,4 +1,5 @@
 const User = require("./users-model");
+const Booking = require("../bookings/bookings-model"); //added booking model
 
 const getAllUsers = async () => {
   try {
@@ -54,7 +55,19 @@ const deleteUser = async (userId) => {
     throw error;
   }
 };
+//function to get all events by user ID
+const getBookedEventsByUserId = async (userId) => {
+  try {
+    const bookings = await Booking.find({ user: userId }).populate("event");
+    const events = bookings.map((booking) => booking.event);
+    return events;
+  } catch (error) {
+    throw error;
+  }
+};
 module.exports = {
+  getBookedEventsByUserId,
+
   createUser,
   getAllUsers,
   getUserById,

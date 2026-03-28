@@ -21,3 +21,10 @@ app.listen(PORT, () => {
   console.log(`Server is listening on Port: ${PORT}`);
   connectToMongoDB();
 });
+/*
+Stretch• Goals:
+-When returning bookings, populate the event and user fields with the  proper information
+-add a route in users router that will return all of the events
+booked by a single user
+ add- an update route for booking specifically designed to cancel their attendance
+*/

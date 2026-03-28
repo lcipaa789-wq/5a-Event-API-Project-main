@@ -36,7 +36,12 @@ const getAllEvents = async (queryData) => {
       $lte: queryData.maxPrice || Infinity, //if no max default to infinity
     };
 
-    const events = await Event.find(filterObject);
+    //sorting with mongodb
+    //{propertyToSortBy: sortOrder}
+    const sortObject = {};
+    sortObject[queryData.sortBy || "_id"] = queryData.sortOrder || "asc";
+
+    const events = await Event.find(filterObject).sort(sortObject);
 
     return events;
   } catch (error) {

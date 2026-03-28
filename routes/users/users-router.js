@@ -5,6 +5,7 @@ const {
   getUserById,
   updateUser,
   deleteUser,
+  getBookedEventsByUserId,
 } = require("./users-controller");
 const router = express.Router();
 
@@ -17,6 +18,22 @@ router.get("/", async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
+      message: "failure",
+      payload: error.message,
+    });
+  }
+});
+// get - router will return all events by single user
+router.get("/:id/events", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const events = await getBookedEventsByUserId(userId);
+    res.json({
+      message: "success",
+      payload: events,
+    });
+  } catch (error) {
+    res.status(404).json({
       message: "failure",
       payload: error.message,
     });

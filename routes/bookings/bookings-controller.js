@@ -25,4 +25,31 @@ const createBooking = async (bookingData) => {
     throw error;
   }
 };
-module.exports = { createBooking };
+
+// function to cancel booking and change status to "cancelled"
+const cancelBooking = async (bookingId) => {
+  try {
+    const booking = await Booking.findById(bookingId);
+    if (!booking) {
+      throw Error("Booking not found");
+    }
+    if (booking.status === "cancelled") {
+      throw Error("Booking already cancelled");
+    }
+    const event = await getEventById(booking.event);
+    //returning tickets back
+    const returnTickets = event.availableTickets + booking.quantity;
+    await updateEvent(booking.event, { availableTickets: returnTickets });
+    const updateBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: "cancelled" },
+      { new: true },
+    )
+      .populate("event")
+      .populate("user");
+    return updateBooking;
+  } catch (error) {
+    throw error;
+  }
+};
+module.exports = { createBooking, cancelBooking };
